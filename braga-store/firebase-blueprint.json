@@ -1,0 +1,224 @@
+{
+  "entities": {
+    "Admin": {
+      "title": "Admin",
+      "description": "Authorized administrator of Braga Store",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 256 },
+        "role": { "type": "string", "enum": ["admin", "superadmin"] },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Product in Braga Store catalog",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 256 },
+        "slug": { "type": "string", "maxLength": 256 },
+        "externalUrl": { "type": "string", "maxLength": 2048 },
+        "currentPrice": { "type": "number" },
+        "previousPrice": { "type": "number" },
+        "shortDescription": { "type": "string", "maxLength": 1000 },
+        "fullDescription": { "type": "string", "maxLength": 20000 },
+        "categoryId": { "type": "string", "maxLength": 128 },
+        "mainImage": { "type": "string", "maxLength": 2000000 },
+        "imageAlt": { "type": "string", "maxLength": 256 },
+        "brand": { "type": "string", "maxLength": 128 },
+        "sku": { "type": "string", "maxLength": 64 },
+        "keywords": { "type": "string", "maxLength": 500 },
+        "seoTitle": { "type": "string", "maxLength": 256 },
+        "seoDescription": { "type": "string", "maxLength": 500 },
+        "isFeatured": { "type": "boolean" },
+        "isOffer": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["draft", "published"] },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "name", "slug", "currentPrice", "status"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Category for organizing products",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 128 },
+        "slug": { "type": "string", "maxLength": 128 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "imageUrl": { "type": "string", "maxLength": 2000000 },
+        "parentId": { "type": "string", "maxLength": 128 },
+        "order": { "type": "number" },
+        "isPublished": { "type": "boolean" },
+        "seoTitle": { "type": "string", "maxLength": 256 },
+        "seoDescription": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "name", "slug", "isPublished"]
+    },
+    "Banner": {
+      "title": "Banner",
+      "description": "Configurable hero promo banner",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 256 },
+        "subtitle": { "type": "string", "maxLength": 500 },
+        "imageUrl": { "type": "string", "maxLength": 2000000 },
+        "mobileImageUrl": { "type": "string", "maxLength": 2000000 },
+        "buttonText": { "type": "string", "maxLength": 100 },
+        "buttonUrl": { "type": "string", "maxLength": 2048 },
+        "order": { "type": "number" },
+        "isActive": { "type": "boolean" },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "title", "isActive"]
+    },
+    "Setting": {
+      "title": "Setting",
+      "description": "Braga Store configuration item",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "data": { "type": "string", "maxLength": 500000 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id"]
+    },
+    "Page": {
+      "title": "Page",
+      "description": "Institutional page content",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 256 },
+        "slug": { "type": "string", "maxLength": 128 },
+        "content": { "type": "string", "maxLength": 100000 },
+        "isPublished": { "type": "boolean" },
+        "seoTitle": { "type": "string", "maxLength": 256 },
+        "seoDescription": { "type": "string", "maxLength": 500 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "title", "slug", "isPublished"]
+    },
+    "ContactMessage": {
+      "title": "ContactMessage",
+      "description": "Inquiry sent via store contact form",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 150 },
+        "email": { "type": "string", "maxLength": 256 },
+        "phone": { "type": "string", "maxLength": 50 },
+        "subject": { "type": "string", "maxLength": 200 },
+        "message": { "type": "string", "maxLength": 5000 },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "name", "email", "message"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Administrative action log",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "action": { "type": "string", "maxLength": 100 },
+        "targetType": { "type": "string", "maxLength": 50 },
+        "targetId": { "type": "string", "maxLength": 128 },
+        "userEmail": { "type": "string", "maxLength": 256 },
+        "timestamp": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "action", "userEmail"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Store delivery order and fulfillment record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "orderCode": { "type": "string", "maxLength": 64 },
+        "productId": { "type": "string", "maxLength": 128 },
+        "productName": { "type": "string", "maxLength": 256 },
+        "productImage": { "type": "string", "maxLength": 2000000 },
+        "customerName": { "type": "string", "maxLength": 150 },
+        "customerEmail": { "type": "string", "maxLength": 256 },
+        "customerCity": { "type": "string", "maxLength": 128 },
+        "amount": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "shipped", "delivered"] },
+        "deliveredAt": { "type": "string", "maxLength": 64 },
+        "deliveryProofPhoto": { "type": "string", "maxLength": 2000000 },
+        "deliveryProofUploadedAt": { "type": "string", "maxLength": 64 },
+        "reviewStatus": { "type": "string", "enum": ["unreviewed", "reviewed"] },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "orderCode", "productId", "status"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Customer product review and rating",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "productId": { "type": "string", "maxLength": 128 },
+        "orderId": { "type": "string", "maxLength": 128 },
+        "authorName": { "type": "string", "maxLength": 150 },
+        "rating": { "type": "number" },
+        "comment": { "type": "string", "maxLength": 5000 },
+        "photoUrl": { "type": "string", "maxLength": 2000000 },
+        "status": { "type": "string", "enum": ["pending", "approved", "hidden"] },
+        "isVerifiedPurchase": { "type": "boolean" },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "productId", "authorName", "rating", "comment", "status"]
+    }
+  },
+  "firestore": {
+    "/admins/{adminId}": {
+      "schema": "Admin",
+      "description": "Authorized administrators list"
+    },
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Products catalog"
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Product categories"
+    },
+    "/banners/{bannerId}": {
+      "schema": "Banner",
+      "description": "Hero promotional banners"
+    },
+    "/settings/{settingId}": {
+      "schema": "Setting",
+      "description": "Store configuration documents"
+    },
+    "/pages/{pageId}": {
+      "schema": "Page",
+      "description": "Institutional pages"
+    },
+    "/contact_messages/{messageId}": {
+      "schema": "ContactMessage",
+      "description": "Contact form submissions"
+    },
+    "/audit_logs/{logId}": {
+      "schema": "AuditLog",
+      "description": "Admin activity logs"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Orders logistics and delivery tracking"
+    },
+    "/reviews/{reviewId}": {
+      "schema": "Review",
+      "description": "Product customer ratings and reviews"
+    }
+  }
+}

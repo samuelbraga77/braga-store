@@ -1,0 +1,117 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isBootstrapAdmin() {
+      return isVerified() && request.auth.token.email == 'samuel3266sa@gmail.com';
+    }
+
+    function isAdmin() {
+      return isBootstrapAdmin() || (isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Connection test document
+    match /test/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Admins collection
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isBootstrapAdmin() || isAdmin();
+    }
+
+    // Products collection
+    match /products/{productId} {
+      allow get: if (resource.data.status == 'published') || isAdmin();
+      allow list: if (resource.data.status == 'published') || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Categories collection
+    match /categories/{categoryId} {
+      allow get: if (resource.data.isPublished == true) || isAdmin();
+      allow list: if (resource.data.isPublished == true) || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Banners collection
+    match /banners/{bannerId} {
+      allow get: if (resource.data.isActive == true) || isAdmin();
+      allow list: if (resource.data.isActive == true) || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Settings collection (Public settings like store name, colors, SEO)
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Institutional pages collection
+    match /pages/{pageId} {
+      allow get: if (resource.data.isPublished == true) || isAdmin();
+      allow list: if (resource.data.isPublished == true) || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Contact messages collection (Visitors can create inquiries, admins manage them)
+    match /contact_messages/{messageId} {
+      allow create: if request.resource.data.name is string 
+        && request.resource.data.name.size() > 0 
+        && request.resource.data.name.size() <= 150
+        && request.resource.data.email is string 
+        && request.resource.data.email.size() > 0 
+        && request.resource.data.email.size() <= 256
+        && request.resource.data.message is string 
+        && request.resource.data.message.size() > 0 
+        && request.resource.data.message.size() <= 5000;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Audit logs collection (Admin activity logging)
+    match /audit_logs/{logId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Orders and delivery tracking collection (Private logistics data, Admin only)
+    match /orders/{orderId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Reviews collection (Customers submit pending reviews, approved reviews read publicly)
+    match /reviews/{reviewId} {
+      allow get: if (resource.data.status == 'approved') || isAdmin();
+      allow list: if (resource.data.status == 'approved') || isAdmin();
+      allow create: if request.resource.data.authorName is string
+        && request.resource.data.authorName.size() > 0
+        && request.resource.data.authorName.size() <= 150
+        && request.resource.data.rating is number
+        && request.resource.data.rating >= 1 && request.resource.data.rating <= 5
+        && request.resource.data.comment is string
+        && request.resource.data.comment.size() > 0
+        && request.resource.data.comment.size() <= 5000
+        && request.resource.data.status == 'pending';
+      allow update, delete: if isAdmin();
+    }
+  }
+}

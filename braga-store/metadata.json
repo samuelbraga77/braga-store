@@ -1,0 +1,6 @@
+{
+  "name": "Braga Store",
+  "description": "Loja virtual profissional e moderna com catálogo, categorias, páginas institucionais e painel administrativo.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
