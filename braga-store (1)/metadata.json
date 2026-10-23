@@ -1,0 +1,8 @@
+{
+  "name": "Braga Store",
+  "description": "Loja virtual moderna, rápida e responsiva de produtos variados com painel administrativo completo, importador de produtos por link e integração Cloud Firestore.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

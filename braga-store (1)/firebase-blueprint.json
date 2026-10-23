@@ -1,0 +1,194 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "A catalog product for Braga Store",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the product"
+        },
+        "title": {
+          "type": "string",
+          "description": "Product title/name",
+          "minLength": 2,
+          "maxLength": 200
+        },
+        "slug": {
+          "type": "string",
+          "description": "SEO friendly URL slug",
+          "minLength": 2,
+          "maxLength": 250
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the product",
+          "maxLength": 5000
+        },
+        "category": {
+          "type": "string",
+          "description": "Primary category name or id",
+          "maxLength": 100
+        },
+        "subcategory": {
+          "type": "string",
+          "description": "Optional subcategory",
+          "maxLength": 100
+        },
+        "price": {
+          "type": "number",
+          "description": "Standard selling price in BRL"
+        },
+        "promoPrice": {
+          "type": "number",
+          "description": "Optional promotional discounted price in BRL"
+        },
+        "mainImage": {
+          "type": "string",
+          "description": "Primary display image URL or optimized data URL",
+          "maxLength": 350000
+        },
+        "images": {
+          "type": "array",
+          "description": "List of gallery image URLs"
+        },
+        "buyUrl": {
+          "type": "string",
+          "description": "Direct external purchase URL",
+          "maxLength": 2048
+        },
+        "status": {
+          "type": "string",
+          "description": "Product active or inactive status",
+          "enum": ["active", "inactive"]
+        },
+        "isFeatured": {
+          "type": "boolean",
+          "description": "Highlight in featured home section"
+        },
+        "isNew": {
+          "type": "boolean",
+          "description": "Highlight in new arrivals section"
+        },
+        "isPopular": {
+          "type": "boolean",
+          "description": "Highlight in popular items section"
+        },
+        "stockStatus": {
+          "type": "string",
+          "description": "Inventory status indicator",
+          "enum": ["in_stock", "low_stock", "out_of_stock"]
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of creation"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last update"
+        }
+      },
+      "required": ["title", "slug", "price", "mainImage", "buyUrl", "status"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Product category definition",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Category document ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "Category display name",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "slug": {
+          "type": "string",
+          "description": "Category URL slug",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "description": {
+          "type": "string",
+          "description": "Short category description",
+          "maxLength": 500
+        },
+        "icon": {
+          "type": "string",
+          "description": "Lucide icon name or emoji representation",
+          "maxLength": 50
+        },
+        "order": {
+          "type": "number",
+          "description": "Display order rank"
+        }
+      },
+      "required": ["name", "slug"]
+    },
+    "Setting": {
+      "title": "Setting",
+      "description": "Store configuration and content settings",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Setting document ID"
+        },
+        "content": {
+          "type": "string",
+          "description": "Stringified JSON or text content",
+          "maxLength": 20000
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last update"
+        }
+      },
+      "required": ["id"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Administrator profile record",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "Email address of the administrator",
+          "maxLength": 254
+        },
+        "role": {
+          "type": "string",
+          "description": "Role identifier",
+          "enum": ["admin"]
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of creation"
+        }
+      },
+      "required": ["email", "role"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Public catalog products with external checkout links"
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Store product categories"
+    },
+    "/settings/{settingId}": {
+      "schema": "Setting",
+      "description": "Store content, banners, institutional pages, and branding configuration"
+    },
+    "/admins/{adminId}": {
+      "schema": "Admin",
+      "description": "Authorized administrators list"
+    }
+  }
+}
