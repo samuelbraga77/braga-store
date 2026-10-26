@@ -1,0 +1,79 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny all access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        (request.auth.token.email == 'samuel3266sa@gmail.com' && request.auth.token.email_verified == true) ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidProduct(data) {
+      return data.title is string && data.title.size() >= 2 && data.title.size() <= 200 &&
+             data.slug is string && data.slug.size() >= 2 && data.slug.size() <= 250 &&
+             data.price is number && data.price >= 0 &&
+             data.mainImage is string && data.mainImage.size() <= 350000 &&
+             data.buyUrl is string && data.buyUrl.size() <= 2048 &&
+             data.status in ['active', 'inactive'];
+    }
+
+    function isValidCategory(data) {
+      return data.name is string && data.name.size() >= 2 && data.name.size() <= 100 &&
+             data.slug is string && data.slug.size() >= 2 && data.slug.size() <= 120;
+    }
+
+    function isValidSetting(data) {
+      return data.id is string && data.id.size() <= 100;
+    }
+
+    // Products catalog
+    match /products/{productId} {
+      allow get, list: if true;
+      allow create: if isAdmin() && isValidId(productId) && isValidProduct(incoming());
+      allow update: if isAdmin() && isValidId(productId) && isValidProduct(incoming());
+      allow delete: if isAdmin() && isValidId(productId);
+    }
+
+    // Product categories
+    match /categories/{categoryId} {
+      allow get, list: if true;
+      allow create: if isAdmin() && isValidId(categoryId) && isValidCategory(incoming());
+      allow update: if isAdmin() && isValidId(categoryId) && isValidCategory(incoming());
+      allow delete: if isAdmin() && isValidId(categoryId);
+    }
+
+    // Store configurations & institutional pages
+    match /settings/{settingId} {
+      allow get, list: if true;
+      allow create, update: if isAdmin() && isValidId(settingId) && isValidSetting(incoming());
+      allow delete: if isAdmin() && isValidId(settingId);
+    }
+
+    // Admin users list
+    match /admins/{adminId} {
+      allow read, write: if isAdmin() && isValidId(adminId);
+    }
+  }
+}
